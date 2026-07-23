@@ -353,6 +353,8 @@
             border:2px solid #fff; background:rgba(255,255,255,0.02);
             cursor:pointer; transition:all .2s;
             display:flex; align-items:center; justify-content:center;
+            position: relative;
+            overflow: hidden;
         }
         .bot-checkbox:hover { border-color:var(--accent); background:rgba(255,255,255,0.1); }
         .bot-checkbox.checked {
@@ -367,7 +369,6 @@
     font-size:16px;
     animation:checkPop .25s ease;
 }
-        }
         @keyframes checkPop{from{transform:scale(0)}to{transform:scale(1)}}
 
         .bot-empty { text-align:center; padding:40px 10px; color:var(--muted); font-size:13px; }
