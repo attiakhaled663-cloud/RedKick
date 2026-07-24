@@ -4116,7 +4116,6 @@ var NetworkGuard = {
         });
     },
     onLost: function() {
-        showNet('offline', 'انقطع الإنترنت — البوتات تنتظر العودة');
         for (var i = 0; i < accounts.length; i++) {
             var b = accounts[i];
             if (b.isSending) {
