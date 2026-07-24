@@ -898,6 +898,23 @@
     </div>
 </div>
 
+<!-- ✅ نافذة تأكيد الحذف -->
+<div class="modal-overlay" id="confirmDeleteModal" style="z-index:2000" onclick="if(event.target===this)closeConfirmDelete()">
+    <div class="modal" style="max-width:340px;text-align:center">
+        <div class="modal-x" onclick="closeConfirmDelete()" title="إغلاق"><i class="fas fa-xmark"></i></div>
+        <div class="modal-head">
+            <div class="modal-icon" style="background:linear-gradient(135deg,rgba(255,59,59,0.25),rgba(255,59,59,0.1));border-color:rgba(255,59,59,0.5)"><i class="fas fa-triangle-exclamation" style="color:var(--danger)"></i></div>
+            <div class="modal-title">تأكيد الحذف</div>
+        </div>
+        <div class="modal-divider"></div>
+        <div class="modal-desc" id="confirmDeleteMsg" style="font-size:12px;color:var(--fg)"></div>
+        <div class="modal-actions" style="margin-top:10px">
+            <button class="btn" id="btnConfirmDeleteYes" style="background:var(--danger);color:#fff;border:2px solid var(--danger)" onclick="confirmDeleteYes()"><i class="fas fa-check"></i> نعم متأكد</button>
+            <button class="btn btn-ghost" onclick="closeConfirmDelete()"><i class="fas fa-xmark"></i> إلغاء</button>
+        </div>
+    </div>
+</div>
+
 <!-- النافذة المنبثقة للإعدادات -->
 <div class="modal-overlay" id="settingsModal" onclick="if(event.target===this)closeSettings()">
     <div class="modal">
@@ -1792,7 +1809,6 @@ function toggleSendToNonLive() {
     sendToNonLive = !sendToNonLive;
     setToggle('tgSendNonLive', sendToNonLive);
     saveSendToNonLive();
-    playToggleSound(sendToNonLive);
     toast(sendToNonLive ? 'تم تفعيل الإرسال لغير المباشر — كل القنوات' : 'تم تفعيل الإرسال للبث المباشر فقط', 'i');
 }
 
@@ -1815,7 +1831,6 @@ function getEffectiveChannelSettings(ch) {
 }
 
 function openUnifiedSettings() {
-    playModalSound(true);
     $('uMessages').value = unifiedSettings.messages || '';
     $('uRepeat').value = unifiedSettings.isInfinite ? 0 : (unifiedSettings.repeat || 1);
     $('uRepeat').disabled = unifiedSettings.isInfinite;
@@ -1837,7 +1852,6 @@ function openUnifiedSettings() {
 }
 
 function closeUnifiedSettings() {
-    playModalSound(false);
     $('unifiedModal').classList.remove('open');
 }
 
@@ -1883,14 +1897,12 @@ function base64ToUtf8(b64) {
 
 // ✅ فتح نافذة النقل
 function openTransferModal() {
-    playModalSound(true);
     $('transferCodeOut').value = '';
     $('transferCodeIn').value = '';
     $('transferModal').classList.add('open');
 }
 
 function closeTransferModal() {
-    playModalSound(false);
     $('transferModal').classList.remove('open');
 }
 
@@ -2132,7 +2144,6 @@ function uToggleEnabled() {
     unifiedSettings.enabled = !unifiedSettings.enabled;
     setToggle('tgUnifiedEnabled', unifiedSettings.enabled);
     $('unifiedFields').style.display = unifiedSettings.enabled ? 'block' : 'none';
-    playToggleSound(unifiedSettings.enabled);
 }
 
 function uToggleInfinite() {
@@ -2141,7 +2152,6 @@ function uToggleInfinite() {
     $('uRepeat').disabled = unifiedSettings.isInfinite;
     if (unifiedSettings.isInfinite) $('uRepeat').value = 0;
     else if ($('uRepeat').value == 0) $('uRepeat').value = 1;
-    playToggleSound(unifiedSettings.isInfinite);
 }
 
 function uToggleRandomDelay() {
@@ -2153,13 +2163,11 @@ function uToggleRandomDelay() {
         uIntervalWrap.style.opacity = unifiedSettings.randomDelay ? '0.35' : '1';
         uIntervalWrap.style.pointerEvents = unifiedSettings.randomDelay ? 'none' : 'auto';
     }
-    playToggleSound(unifiedSettings.randomDelay);
 }
 
 function uToggleRandomMessages() {
     unifiedSettings.randomMessages = !unifiedSettings.randomMessages;
     setToggle('uTgRandomMessages', unifiedSettings.randomMessages);
-    playToggleSound(unifiedSettings.randomMessages);
 }
 
 function saveUnifiedSettings() {
@@ -2210,7 +2218,6 @@ var qsSeparateMode = false;
 var qsSeparateMessages = {}; // { botId: 'message' }
 
 function openQuickSend() {
-    playModalSound(true);
     qsSelectedBots = {};
     qsSelectedChannels = {};
     qsExpandedBot = null;
@@ -2222,14 +2229,12 @@ function openQuickSend() {
 }
 
 function closeQuickSend() {
-    playModalSound(false);
     $('quickSendModal').classList.remove('open');
 }
 
 // ✅ تبديل وضع الإعدادات المنفصلة
 function toggleQsSeparateMode() {
     qsSeparateMode = !qsSeparateMode;
-    playToggleSound(qsSeparateMode);
     var tg = $('tgQsSeparate');
     if (qsSeparateMode) tg.classList.add('on');
     else tg.classList.remove('on');
@@ -2389,7 +2394,6 @@ function qsToggleChannel(botId, slug) {
     var newState = !qsSelectedChannels[botId][slug];
     if (qsSelectedChannels[botId][slug]) delete qsSelectedChannels[botId][slug];
     else qsSelectedChannels[botId][slug] = true;
-    playToggleSound(newState);
     renderQsChannelList();
     updateQsSendButton();
     // ✅ حدّث القائمة المنفصلة لعرض عدّاد القنوات المحددة
@@ -2423,7 +2427,6 @@ function renderQsBotList() {
 }
 
 function openQsChannels(botId) {
-    playModalSound(true);
     qsExpandedBot = botId;
     var b = findBot(botId);
     if (!b) return;
@@ -2433,7 +2436,6 @@ function openQsChannels(botId) {
 }
 
 function closeQsChannels() {
-    playModalSound(false);
     $('qsChannelsModal').classList.remove('open');
     qsExpandedBot = null;
 }
@@ -2651,7 +2653,7 @@ function loadFromStorage() {
                 workingProxy: (typeof b.workingProxy === 'number' && b.workingProxy >= 0) ? b.workingProxy : -1,
                 workingSendProxy: -1
             };
-            if (b.selected) selectedBots[b.id] = true;
+            // ✅ لا نستعيد حالة التحديد بعد إعادة الدخول للموقع — التحديد يبدأ دائماً فارغاً
             accounts.push(bot);
         }
     } catch(e) { console.warn('Load failed', e); }
@@ -2738,21 +2740,8 @@ function playModalSound(open) {
     }
 }
 
-// ✅ مستمع عام: أي زر/عنصر قابل للنقر → صوت فوري
-// نستخدم capture phase للسرعة القصوى (قبل أي معالجة أخرى)
-document.addEventListener('pointerdown', function(e) {
-    var t = e.target;
-    if (!t) return;
-    // ✅ تجاهل النقر على حقول الإدخال
-    if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA') return;
-    // ✅ ابحث عن أقرب عنصر قابل للنقر
-    var el = t.closest('button, [onclick], .toggle, .header-toggle, .bot-checkbox, .info-tab, .quick-item, .feature-card, .info-fab, .whatsapp-fab, .back-btn, .modal-x, .nav-btn');
-    if (!el) return;
-    // ✅ صوت فوري — لا انتظار
-    playClickSound();
-}, true);
-
-// ✅ تفعيل AudioContext عند أول تفاعل (سياسة المتصفح)
+// ✅ تفعيل AudioContext عند أول تفاعل (سياسة المتصفح) — بدون تشغيل صوت النقر العام
+// ملاحظة: تم إلغاء صوت النقر العام على كل الأزرار، الصوت الآن فقط عند تحديد/إلغاء تحديد حساب
 document.addEventListener('pointerdown', function() {
     _getSfxCtx();
 }, { once: true });
@@ -2767,13 +2756,9 @@ document.addEventListener('keydown', function() {
 function showPhase(name) {
     document.querySelectorAll('.phase').forEach(function(p){ p.classList.remove('active'); });
     $('ph-'+name).classList.add('active');
-    playClickSound(); // ✅ صوت عند التنقل بين الصفحات
 }
 
 function toast(msg, type) {
-    // ✅ صوت حسب نوع الرسالة
-    if (type === 's') playSuccessSound();
-    else if (type === 'e') playErrorSound();
     var t = document.createElement('div');
     t.className = 'toast toast-' + (type || 'i');
     t.textContent = msg;
@@ -2874,11 +2859,9 @@ function navBackFromAdd() {
 //  ✅ زر التواصل عبر واتساب
 // ═══════════════════════════════════════
 function openWhatsAppModal() {
-    playModalSound(true);
     $('whatsAppModal').classList.add('open');
 }
 function closeWhatsAppModal() {
-    playModalSound(false);
     $('whatsAppModal').classList.remove('open');
 }
 // ✅ تحويل المستخدم إلى واتساب على الرقم +963 995271182
@@ -2891,11 +2874,9 @@ function goToWhatsApp() {
 //  ✅ نافذة المعلومات الشاملة
 // ═══════════════════════════════════════
 function openInfoModal() {
-    playModalSound(true);
     $('infoModal').classList.add('open');
 }
 function closeInfoModal() {
-    playModalSound(false);
     $('infoModal').classList.remove('open');
 }
 // ✅ تبديل بين أقسام المعلومات
@@ -2922,7 +2903,6 @@ function switchInfoTab(tabName, btnEl) {
 var renewTokenBotId = null;
 
 function openRenewToken(id) {
-    playModalSound(true);
     var b = findBot(id);
     if (!b) return;
     renewTokenBotId = id;
@@ -2936,7 +2916,6 @@ function openRenewToken(id) {
 }
 
 function closeRenewToken() {
-    playModalSound(false);
     $('renewTokenModal').classList.remove('open');
     renewTokenBotId = null;
 }
@@ -3145,26 +3124,49 @@ function updateBulkUI() {
     $('btnClearSel').disabled = count === 0;
 }
 
+// ═══════════════════════════════════════
+//  ✅ نافذة تأكيد الحذف العامة
+// ═══════════════════════════════════════
+var _confirmDeleteAction = null;
+
+function askConfirmDelete(message, onYes) {
+    $('confirmDeleteMsg').textContent = message;
+    _confirmDeleteAction = onYes;
+    $('confirmDeleteModal').classList.add('open');
+}
+
+function closeConfirmDelete() {
+    $('confirmDeleteModal').classList.remove('open');
+    _confirmDeleteAction = null;
+}
+
+function confirmDeleteYes() {
+    var action = _confirmDeleteAction;
+    closeConfirmDelete();
+    if (typeof action === 'function') action();
+}
+
 function removeBot(id) {
     var b = findBot(id);
     if (!b) return;
-    if (b.isSending) {
-        b.isSending = false;
-        if (abortControllers[id]) abortControllers[id].abort();
-    }
-    accounts = accounts.filter(function(a){ return a.id !== id; });
-    delete selectedBots[id];
-    delete abortControllers[id];
-    persist();
-    renderBotList();
-    toast('تم حذف البوت', 'i');
+    askConfirmDelete('هل أنت متأكد من حذف الحساب "' + b.username + '"؟', function() {
+        if (b.isSending) {
+            b.isSending = false;
+            if (abortControllers[id]) abortControllers[id].abort();
+        }
+        accounts = accounts.filter(function(a){ return a.id !== id; });
+        delete selectedBots[id];
+        delete abortControllers[id];
+        persist();
+        renderBotList();
+        toast('تم حذف البوت', 'i');
+    });
 }
 
 // ═══════════════════════════════════════
 //  النافذة المنبثقة لإعدادات البوت
 // ═══════════════════════════════════════
 function openSettings(id) {
-    playModalSound(true);
     var b = findBot(id);
     if (!b) return;
     activeModalBotId = id;
@@ -3181,7 +3183,6 @@ function openSettings(id) {
 }
 
 function closeSettings() {
-    playModalSound(false);
     $('settingsModal').classList.remove('open');
     activeModalBotId = null;
 }
@@ -3197,7 +3198,6 @@ function mToggle(toggleId, fieldName) {
     if (!b) return;
     b[fieldName] = !b[fieldName];
     setToggle(toggleId, b[fieldName]);
-    playToggleSound(b[fieldName]);
     persist();
 }
 
@@ -3269,9 +3269,13 @@ function mRemoveChannel(slug) {
     if (activeModalBotId === null) return;
     var b = findBot(activeModalBotId);
     if (!b) return;
-    b.channels = b.channels.filter(function(c){ return c.slug !== slug; });
-    renderChannelsList(b);
-    persist();
+    askConfirmDelete('هل أنت متأكد من حذف القناة "' + slug + '"؟', function() {
+        var bb = findBot(activeModalBotId);
+        if (!bb) return;
+        bb.channels = bb.channels.filter(function(c){ return c.slug !== slug; });
+        renderChannelsList(bb);
+        persist();
+    });
 }
 
 function renderChannelsList(b) {
@@ -3371,7 +3375,6 @@ function saveSettings() {
 var activeChannelSlug = null;
 
 function openChannelSettings(slug) {
-    playModalSound(true);
     if (activeModalBotId === null) return;
     var b = findBot(activeModalBotId);
     if (!b) return;
@@ -3399,7 +3402,6 @@ function openChannelSettings(slug) {
 }
 
 function closeChannelSettings() {
-    playModalSound(false);
     $('channelModal').classList.remove('open');
     activeChannelSlug = null;
 }
@@ -3414,7 +3416,6 @@ function cToggleInfinite() {
     $('cRepeat').disabled = ch.isInfinite;
     if (ch.isInfinite) $('cRepeat').value = 0;
     else if ($('cRepeat').value == 0) $('cRepeat').value = 1;
-    playToggleSound(ch.isInfinite);
     persist();
 }
 
@@ -3432,7 +3433,6 @@ function cToggleRandomDelay() {
         cIntervalWrap.style.opacity = ch.randomDelay ? '0.35' : '1';
         cIntervalWrap.style.pointerEvents = ch.randomDelay ? 'none' : 'auto';
     }
-    playToggleSound(ch.randomDelay);
     persist();
 }
 
@@ -3444,7 +3444,6 @@ function cToggleRandomMessages() {
     if (!ch) return;
     ch.randomMessages = !ch.randomMessages;
     setToggle('tgRandomMessages', ch.randomMessages);
-    playToggleSound(ch.randomMessages);
     persist();
 }
 
